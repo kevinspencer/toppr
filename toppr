@@ -22,6 +22,7 @@ my $blog_url    = '';
 my $blog_id     = '';
 my $blog_user   = '';
 my $blog_pass   = '';
+my $post_tags   = 'last.fm, music';
 
 # contact last.fm, obtain past 7 days of play data...
 my $lastfm = Net::LastFM->new(
@@ -71,7 +72,7 @@ $mech->get(qq|$blog_url?__mode=view&_type=entry&blog_id=$blog_id|);
 # fill out the form fields...
 $mech->form_name('entry_form');
 $mech->field('title',$entry->{title});
-$mech->field('tags','foo,bar,baz'); # adjust as needed
+$mech->field('tags',$post_tags);
 $mech->field('text',$entry->{btext});
 $mech->field('status',2); # publish, or 1 = draft
 
