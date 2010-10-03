@@ -1,0 +1,81 @@
+#!/usr/bin/perl -w
+# Copyright 2010 Kevin Spencer <kevin@kevinspencer.org>
+#
+# Permission to use, copy, modify, distribute, and sell this software and its
+# documentation for any purpose is hereby granted without fee, provided that
+# the above copyright notice appear in all copies and that both that
+# copyright notice and this permission notice appear in supporting
+# documentation. No representations are made about the suitability of this
+# software for any purpose. It is provided "as is" without express or
+# implied warranty.
+#
+################################################################################
+
+use Net::LastFM;
+use WWW::Mechanize;
+use strict;
+
+# edit the following config params accordingly...
+my $api_key     = '';
+my $api_secret  = '';
+my $lastfm_user = '';
+my $blog_url    = '';
+my $blog_id     = '';
+my $blog_user   = '';
+my $blog_pass   = '';
+
+# contact last.fm, obtain past 7 days of play data...
+my $lastfm = Net::LastFM->new(
+    api_key    => $api_key,
+    api_secret => $api_secret
+);
+
+my $data = $lastfm->request_signed(
+    method => 'user.getTopArtists',
+    user   => $lastfm_user,
+    period => '7day'
+);
+
+my $artists = $data->{topartists}{artist};
+
+# construct the HTML table that will eventually be posted as a blog entry...
+my $html = "<table>\n";
+my $count = 0;
+for my $artist (@$artists) {
+    $html .= "<tr>\n";
+    $html .= "<td><img src=\"$artist->{image}[1]{'#text'}\"></td>\n";
+    $html .= "<td>$artist->{name}<b> ($artist->{playcount})</b></td>\n";
+    $html .= "</tr>\n";
+    $count++;
+    last if ($count == 5);
+}
+$html .= "</table>\n";
+
+my $mech = WWW::Mechanize->new();
+my $entry;
+$entry->{title} = "Weekly last.fm Top Artists";
+$entry->{btext} = "What I've been listening to this week.\n\n";
+$entry->{btext} .= $html . "\n\n";
+$entry->{btext} .= "<i>Auto posted by toppr.</i>";
+
+# get our MT login cookie...
+$mech->get($blog_url);
+$mech->field('username',$blog_user);
+$mech->field('password',$blog_pass);
+$mech->submit();
+
+# retrieve the new entry page...
+$mech->get(qq|$blog_url?__mode=view&_type=entry&blog_id=$blog_id|);
+
+# fill out the form fields...
+$mech->form_name('entry_form');
+$mech->field('title',$entry->{title});
+$mech->field('tags','foo,bar,baz'); # adjust as needed
+$mech->field('text',$entry->{btext});
+$mech->field('status',2); # publish, or 1 = draft
+
+# submit the blog post, this will block while MT works...
+$mech->submit(); 
+if (! $mech->success()) {
+    die $mech->status(), "\n";
+}
