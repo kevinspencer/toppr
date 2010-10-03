@@ -15,7 +15,6 @@ use Net::LastFM;
 use WWW::Mechanize;
 use strict;
 
-# edit the following config params accordingly...
 my $api_key     = '';
 my $api_secret  = '';
 my $lastfm_user = '';
@@ -43,7 +42,8 @@ my $html = "<table>\n";
 my $count = 0;
 for my $artist (@$artists) {
     $html .= "<tr>\n";
-    $html .= "<td><img src=\"$artist->{image}[1]{'#text'}\"></td>\n";
+    my $image = $artist->{image}[1]{'#text'};
+    $html .= "<td><img src=\"$image\" width=\"64\" height=\"45\"></td>\n";
     $html .= "<td>$artist->{name}<b> ($artist->{playcount})</b></td>\n";
     $html .= "</tr>\n";
     $count++;
@@ -56,7 +56,8 @@ my $entry;
 $entry->{title} = "Weekly last.fm Top Artists";
 $entry->{btext} = "What I've been listening to this week.\n\n";
 $entry->{btext} .= $html . "\n\n";
-$entry->{btext} .= "<i>Auto posted by toppr.</i>";
+my $toppr_url = 'http://github.com/kevinspencer/toppr';
+$entry->{btext} .= "<i>Auto posted by <a href=\"$toppr_url\">toppr</a>.</i>";
 
 # get our MT login cookie...
 $mech->get($blog_url);

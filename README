@@ -1,7 +1,9 @@
 toppr
 -----
 
-toppr is a Perl program that retrieves last.fm statistics and auto posts them to a Movable Type blog.  It's essentially a blog version of what tweakly.fm does for Twitter.
+toppr is a Perl program that retrieves last.fm statistics and auto posts them 
+to a Movable Type blog.  It's essentially a blog version of what tweekly.fm 
+does for Twitter.
 
 Installation
 ------------
