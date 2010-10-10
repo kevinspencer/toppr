@@ -15,14 +15,15 @@ use Net::LastFM;
 use WWW::Mechanize;
 use strict;
 
-my $api_key     = '';
-my $api_secret  = '';
-my $lastfm_user = '';
-my $blog_url    = '';
-my $blog_id     = '';
-my $blog_user   = '';
-my $blog_pass   = '';
+my $api_key     = $ENV{LFM_API_KEY} or die "No LFM_API_KEY in env\n";
+my $api_secret  = $ENV{LFM_API_SECRET} or die "No LFM_API_SECRET in env\n";
+my $lastfm_user = $ENV{LFM_USER} or die "No LFM_USER in env\n";
+my $blog_url    = $ENV{BLOG_URL} or die "No BLOG_URL in env\n";
+my $blog_id     = $ENV{BLOG_ID} or die "No BLOG_ID in env\n";
+my $blog_user   = $ENV{BLOG_USER} or die "No BLOG_USER in env\n";
+my $blog_pass   = $ENV{BLOG_PASS} or die "No BLOG_PASS in env\n";
 my $post_tags   = 'last.fm, music';
+my $lfm_profile = '';
 
 # contact last.fm, obtain past 7 days of play data...
 my $lastfm = Net::LastFM->new(
@@ -55,7 +56,7 @@ $html .= "</table>\n";
 my $mech = WWW::Mechanize->new();
 my $entry;
 $entry->{title} = "Weekly last.fm Top Artists";
-$entry->{btext} = "What I've been listening to this week.\n\n";
+$entry->{btext} = "What I've been <a href=\"$lfm_profile\">listening to</a> this week.\n\n";
 $entry->{btext} .= $html . "\n\n";
 my $toppr_url = 'http://github.com/kevinspencer/toppr';
 $entry->{btext} .= "<i>Auto posted by <a href=\"$toppr_url\">toppr</a>.</i>";
