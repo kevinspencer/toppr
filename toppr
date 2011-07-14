@@ -44,9 +44,10 @@ my $html = "<table>\n";
 my $count = 0;
 for my $artist (@$artists) {
     $html .= "<tr>\n";
-    my $image = $artist->{image}[1]{'#text'};
+    my $image    = $artist->{image}[1]{'#text'};
+    my $playword = $artist->{playcount} == 1 ? 'play' : 'plays';
     $html .= "<td><img src=\"$image\" width=\"64\" height=\"45\"></td>\n";
-    $html .= "<td>$artist->{name}<b> ($artist->{playcount})</b></td>\n";
+    $html .= "<td>$artist->{name}<b> ($artist->{playcount} $playword)</b></td>\n";
     $html .= "</tr>\n";
     $count++;
     last if ($count == 5);
