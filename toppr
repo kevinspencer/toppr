@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 # Copyright 2010 Kevin Spencer <kevin@kevinspencer.org>
 #
 # Permission to use, copy, modify, distribute, and sell this software and its
@@ -14,6 +14,7 @@
 use Net::LastFM;
 use WWW::Mechanize;
 use strict;
+use warnings;
 
 my $api_key     = $ENV{LFM_API_KEY} or die "No LFM_API_KEY in env\n";
 my $api_secret  = $ENV{LFM_API_SECRET} or die "No LFM_API_SECRET in env\n";
